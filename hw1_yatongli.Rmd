@@ -1,0 +1,44 @@
+---
+title: "BIOST578 Homework 1"
+author: "Yatong Li"
+output: pdf_document
+---
+
+```{r, echo=FALSE}
+library("knitr")
+data(iris)
+library(ggplot2)
+library(reshape2)
+opts_chunk$set(tidy=TRUE, tidy.opts=list(blank=FALSE, width.cutoff=80),cache=TRUE)
+
+# Add a column to keep track of the flower
+iris$flower_id <- rownames(iris)
+# Default options
+iris_melted <- melt(iris)
+
+# Split that variable to get the columns we need
+split_variable <- strsplit(as.character(iris_melted$variable),split="\\.")
+# Create two new variables
+iris_melted$flower_part <- sapply(split_variable, "[", 1)
+iris_melted$measurement_type <- sapply(split_variable, "[", 2)
+# Remove the one we don't need anymore
+iris_melted$variable <- NULL
+
+# cast
+iris_cast <- dcast(iris_melted, formula=flower_id+Species+flower_part~measurement_type)
+
+# ggplot grammar
+my_plot <- ggplot(data=iris_cast, aes(x=Width, y=Length)) + # Add points and use free scales in the facet
+  geom_point()+facet_grid(Species~flower_part, scale="free") +
+  # Add a regression line
+  geom_smooth(method = "lm") +
+  # Use the black/white theme and increase the font size
+  theme_bw(base_size = 20)
+
+```
+
+## plot
+```{r ggthemes, fig.height=4}
+library(ggthemes)
+my_plot+theme_few(base_size=20)
+```
