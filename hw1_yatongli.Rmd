@@ -4,7 +4,7 @@ author: "Yatong Li"
 output: pdf_document
 ---
 
-```{r, echo=FALSE}
+```{r}
 library("knitr")
 data(iris)
 library(ggplot2)
